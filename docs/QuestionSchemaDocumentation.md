@@ -62,4 +62,3 @@ The `Question` schema represents a question within a quiz application. It encomp
 ## Usage
 
 The schema is intended to be used with MongoDB through Mongoose, providing a structured and scalable way to manage quiz questions in an application.
-f

@@ -13,7 +13,7 @@
     "prod": "pnpm build && pnpm start"
   },
   "keywords": [
-    "quiz",
+    "question",
     "ansopedia"
   ],
   "author": "ansopedia",
