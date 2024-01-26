@@ -1,23 +1,24 @@
 import express, { type Application } from 'express';
-import dotenv from 'dotenv';
 import { pinoHttp } from 'pino-http';
 
 import { logger } from './utils';
-import routes from './routes';
+import { APP_PORT } from './constants';
+import { routes } from './routes';
+import getDatabaseConnection from './config/database-config';
 
-dotenv.config();
-const port = process.env.APP_PORT ?? 8000;
+export const app: Application = express();
 
-const app: Application = express();
-
+app.use(express.json());
 app.use(pinoHttp({ logger }));
+app.use(routes);
 
-app.use('/v1', routes);
+(async () => {
+  await getDatabaseConnection();
+})();
 
 export const server = () => {
-  // Start app
-  app.listen(port, () => {
+  app.listen(APP_PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`Server is listening on port ${port}!`);
+    console.log(`Server is listening on port ${APP_PORT}!`);
   });
 };

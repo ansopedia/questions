@@ -1,6 +1,7 @@
 import path from 'path';
 import pino, { type DestinationStream } from 'pino';
 import fs from 'fs';
+import { PINO_LOG_LEVEL } from '../constants';
 
 // Define the log directory path
 const logDirectory = path.join(process.cwd(), 'log');
@@ -14,7 +15,9 @@ try {
     fs.mkdirSync(logDirectory);
   }
 } catch (error) {
-  consoleLogger.error(`Failed to create log directory: ${(error as Error).message}`);
+  consoleLogger.error(
+    `Failed to create log directory: ${(error as Error).message}`,
+  );
   process.exit(1);
 }
 
@@ -25,7 +28,7 @@ const transport: DestinationStream = pino.transport({
 
 const logger = pino(
   {
-    level: process.env.PINO_LOG_LEVEL ?? 'info',
+    level: PINO_LOG_LEVEL ?? 'info',
     timestamp: pino.stdTimeFunctions.isoTime,
   },
   transport,
