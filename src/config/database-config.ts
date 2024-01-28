@@ -6,7 +6,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { NODE_ENV } from '../constants';
 
 const DB_OPTIONS = {
-  dbName: 'ansopedia-user',
+  dbName: 'ansopedia-questions',
 };
 
 async function getDatabaseConnection() {
