@@ -1,6 +1,7 @@
 import express from 'express';
-import authRoutes from './auth';
+import questionRoutes from './question';
+import { categoryRoutes } from './category/category.routes';
 
 export const routes = express.Router();
 
-routes.use(authRoutes);
+routes.use(questionRoutes, categoryRoutes);
