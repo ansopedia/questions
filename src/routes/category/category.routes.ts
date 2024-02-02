@@ -1,7 +1,12 @@
 import express from 'express';
 
 import { isValidObjectId, validateCategory } from '../../utils/validation';
-import { CREATE_CATEGORY_ROUTE } from '../../constants/routes/category.constants';
+import {
+  CREATE_CATEGORY_ROUTE,
+  GET_CATEGORIES_ROUTE,
+  GET_CATEGORY_ROUTE,
+  UPDATE_CATEGORY_ROUTE,
+} from '../../constants/routes/category.constants';
 import {
   handleValidationErrors,
   validateAccessTokens,
@@ -17,4 +22,17 @@ categoryRoutes.post(
   handleValidationErrors,
   validateAccessTokens,
   CategoryController.createCategory,
+);
+
+categoryRoutes.get(GET_CATEGORIES_ROUTE, CategoryController.getCategories);
+
+categoryRoutes.get(GET_CATEGORY_ROUTE, CategoryController.getCategoryById);
+
+categoryRoutes.put(
+  UPDATE_CATEGORY_ROUTE,
+  validateCategory,
+  isValidObjectId,
+  handleValidationErrors,
+  validateAccessTokens,
+  CategoryController.updateCategory,
 );

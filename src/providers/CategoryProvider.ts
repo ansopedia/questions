@@ -8,6 +8,13 @@ interface ICreateCategory {
   parentId?: string;
 }
 
+interface IUpdateCategory {
+  name: string;
+  description: string;
+  updatedBy: string;
+  parentId?: string;
+}
+
 export class CategoryProvider {
   static async createCategory({
     name,
@@ -37,15 +44,21 @@ export class CategoryProvider {
 
   static async updateCategory(
     categoryId: string,
-    { name, description, updatedBy, parentId }: ICategory,
-  ) {
-    return CategoryModel.findByIdAndUpdate(
-      categoryId,
-      { name, description, updatedBy, parentId },
-      {
-        new: true,
-      },
-    );
+    { name, description, updatedBy, parentId }: IUpdateCategory,
+  ): Promise<ICategory | null> {
+    try {
+      const updateCategory = CategoryModel.findByIdAndUpdate(
+        categoryId,
+        { name, description, updatedBy, parentId },
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
+      return updateCategory;
+    } catch (error) {
+      return null;
+    }
   }
 
   static async deleteCategory(categoryId: string) {

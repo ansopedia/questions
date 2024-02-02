@@ -47,4 +47,101 @@ export class CategoryController {
       });
     }
   }
+
+  static async getCategories(_: Request, response: Response) {
+    try {
+      const categories = await CategoryProvider.getCategories();
+      const categoryDto = categories.map(
+        (category) => new CategoryDto(category),
+      );
+
+      sendApiResponse({
+        response,
+        message: 'Categories fetched successfully',
+        statusCode: STATUS_CODES.OK,
+        payload: {
+          categories: categoryDto.map((category) => category.getCategory()),
+        },
+      });
+    } catch (error) {
+      sendApiResponse({
+        response,
+        message: INTERNAL_SERVER_ERROR,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+        errors: error as Error,
+      });
+    }
+  }
+
+  static async getCategoryById(request: Request, response: Response) {
+    try {
+      const { id } = request.params;
+
+      const category = await CategoryProvider.getCategoryById(id);
+
+      if (!category) {
+        sendApiResponse({
+          response,
+          message: 'Category does not exist',
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+        return;
+      }
+
+      const categoryDto = new CategoryDto(category);
+
+      sendApiResponse({
+        response,
+        message: 'Category fetched successfully',
+        statusCode: STATUS_CODES.OK,
+        payload: { category: categoryDto.getCategory() },
+      });
+    } catch (error) {
+      sendApiResponse({
+        response,
+        message: INTERNAL_SERVER_ERROR,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+        errors: error as Error,
+      });
+    }
+  }
+
+  static async updateCategory(request: Request, response: Response) {
+    try {
+      const { id } = request.params;
+      const { name, description, userId, parentId } = request.body;
+
+      const category = await CategoryProvider.updateCategory(id, {
+        name,
+        description,
+        updatedBy: userId,
+        parentId,
+      });
+
+      if (!category) {
+        sendApiResponse({
+          response,
+          message: 'Category does not exist',
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+        return;
+      }
+
+      const categoryDto = new CategoryDto(category);
+
+      sendApiResponse({
+        response,
+        message: 'Category updated successfully',
+        statusCode: STATUS_CODES.OK,
+        payload: { category: categoryDto.getCategory() },
+      });
+    } catch (error) {
+      sendApiResponse({
+        response,
+        message: INTERNAL_SERVER_ERROR,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+        errors: error as Error,
+      });
+    }
+  }
 }

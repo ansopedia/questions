@@ -9,6 +9,11 @@ export const validateCategory = [
   check('name').notEmpty().withMessage('Name is required').bail().trim(),
 ];
 
+export const validateUpdateCategoryFields = [
+  check('name').optional().trim(),
+  check('description').optional().trim(),
+];
+
 export const isValidObjectId = [
   check('parentId')
     .optional()
