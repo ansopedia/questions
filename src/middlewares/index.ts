@@ -44,12 +44,15 @@ export const validateAccessTokens = async (
         authorization,
       },
     });
-
+    const body = await fetchResponse.json();
     if (!fetchResponse.ok) {
-      throw new Error('Failed to verify access token');
+      return sendApiResponse({
+        response,
+        statusCode: fetchResponse.status,
+        message: body.message,
+      });
     }
 
-    const body = await fetchResponse.json();
     req.body.userId = body.userId;
     req.body.role = body.role;
 

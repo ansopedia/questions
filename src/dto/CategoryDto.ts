@@ -15,6 +15,7 @@ export class CategoryDto {
       createdBy: this.category.createdBy,
       updatedBy: this.category.updatedBy,
       parentId: this.category.parentId,
+      slug: this.category.slug,
     };
   }
 }

@@ -1,3 +1,4 @@
+import { generateUniqueSlug } from '../helpers/generateSlug';
 import { CategoryModel, ICategory } from '../models/category';
 
 interface ICreateCategory {
@@ -14,12 +15,14 @@ export class CategoryProvider {
     createdBy,
     parentId,
   }: ICreateCategory) {
+    const slug = await generateUniqueSlug(name, CategoryModel);
     const createdCategory = new CategoryModel({
       name,
       description,
       createdBy,
       updatedBy: createdBy,
       parentId,
+      slug,
     });
     return createdCategory.save();
   }

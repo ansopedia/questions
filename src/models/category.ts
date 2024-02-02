@@ -75,11 +75,13 @@ export interface ICategory extends Document {
 
 const CategorySchema: Schema<ICategory> = new Schema(
   {
+    name: { type: String, required: true },
+    parentId: { type: Schema.Types.ObjectId, ref: 'Category' },
     description: { type: String },
     isDeleted: { type: Boolean, default: false },
     createdBy: { type: String, required: true },
     updatedBy: { type: String, required: true },
-    slug: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
   },
   { timestamps: true },
 );
