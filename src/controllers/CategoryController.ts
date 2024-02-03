@@ -50,9 +50,10 @@ export class CategoryController {
 
   static async getCategories(_: Request, response: Response) {
     try {
-      const categories = await CategoryProvider.getCategories();
-      const categoryDto = categories.map(
-        (category) => new CategoryDto(category),
+      const categories = await CategoryProvider.getCategoryByParentId(null);
+
+      const categoryDto = categories.map((category) =>
+        new CategoryDto(category).getCategory(),
       );
 
       sendApiResponse({
@@ -60,7 +61,7 @@ export class CategoryController {
         message: 'Categories fetched successfully',
         statusCode: STATUS_CODES.OK,
         payload: {
-          categories: categoryDto.map((category) => category.getCategory()),
+          categories: categoryDto,
         },
       });
     } catch (error) {
@@ -73,28 +74,36 @@ export class CategoryController {
     }
   }
 
-  static async getCategoryById(request: Request, response: Response) {
+  static async getCategoryBySlug(request: Request, response: Response) {
     try {
-      const { id } = request.params;
+      const { slug } = request.params;
 
-      const category = await CategoryProvider.getCategoryById(id);
+      const category = await CategoryProvider.getCategoryBySlug(slug);
 
       if (!category) {
-        sendApiResponse({
+        return sendApiResponse({
           response,
           message: 'Category does not exist',
           statusCode: STATUS_CODES.NOT_FOUND,
         });
-        return;
       }
 
-      const categoryDto = new CategoryDto(category);
+      const children = await CategoryProvider.getCategoryByParentId(
+        category._id,
+      );
+
+      const categoryDto = new CategoryDto(category).getCategory();
+
+      const categoryWithChildren = {
+        ...categoryDto,
+        children: children.map((child) => new CategoryDto(child).getCategory()),
+      };
 
       sendApiResponse({
         response,
         message: 'Category fetched successfully',
         statusCode: STATUS_CODES.OK,
-        payload: { category: categoryDto.getCategory() },
+        payload: { category: categoryWithChildren },
       });
     } catch (error) {
       sendApiResponse({

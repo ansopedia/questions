@@ -1,6 +1,10 @@
 import express from 'express';
 
-import { isValidObjectId, validateCategory } from '../../utils/validation';
+import {
+  isValidObjectId,
+  validateCategory,
+  validateSlug,
+} from '../../utils/validation';
 import {
   CREATE_CATEGORY_ROUTE,
   GET_CATEGORIES_ROUTE,
@@ -26,7 +30,12 @@ categoryRoutes.post(
 
 categoryRoutes.get(GET_CATEGORIES_ROUTE, CategoryController.getCategories);
 
-categoryRoutes.get(GET_CATEGORY_ROUTE, CategoryController.getCategoryById);
+categoryRoutes.get(
+  GET_CATEGORY_ROUTE,
+  validateSlug,
+  handleValidationErrors,
+  CategoryController.getCategoryBySlug,
+);
 
 categoryRoutes.put(
   UPDATE_CATEGORY_ROUTE,

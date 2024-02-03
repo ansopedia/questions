@@ -38,8 +38,24 @@ export class CategoryProvider {
     return CategoryModel.find().exec();
   }
 
-  static async getCategoryById(categoryId: string) {
-    return CategoryModel.findById(categoryId).exec();
+  static async getCategoryById(categoryId: string): Promise<ICategory | null> {
+    try {
+      return await CategoryModel.findById(categoryId);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  static async getCategoryBySlug(slug: string): Promise<ICategory | null> {
+    try {
+      return await CategoryModel.findOne({ slug }).exec();
+    } catch (error) {
+      return null;
+    }
+  }
+
+  static async getCategoryByParentId(parentId: string | null) {
+    return await CategoryModel.find({ parentId }).exec();
   }
 
   static async updateCategory(

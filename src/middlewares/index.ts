@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 import { sendApiResponse } from '../utils/sendApiResponse';
 import { STATUS_CODES } from '../constants/statusCode/status-code.constants';
 import { INTERNAL_SERVER_ERROR } from '../constants';
+import { VERIFY_ACCESS_TOKEN_ROUTE } from '../constants/routes/services.constants';
 
 export const handleValidationErrors = (
   req: Request,
@@ -38,8 +39,7 @@ export const validateAccessTokens = async (
       return;
     }
 
-    const verifyAccessToken = `http://localhost:8000/api/v1/auth/verify-access-token`;
-    const fetchResponse = await fetch(verifyAccessToken, {
+    const fetchResponse = await fetch(VERIFY_ACCESS_TOKEN_ROUTE, {
       headers: {
         authorization,
       },
