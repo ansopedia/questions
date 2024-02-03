@@ -31,12 +31,12 @@ export interface ICategory extends Document {
     shares: number;
     rating: number;
     favorites: number;
-    enrollmentCount: number; // Number of users enrolled in the course
+    enrollments: number;
   };
   userInteractions: {
     likes: { userId: string; timestamp: Date }[];
     comments: { userId: string; comment: string; timestamp: Date }[];
-    rating: Rating[];
+    ratings: Rating[];
   };
 
   // Metadata and categorization
@@ -55,10 +55,10 @@ export interface ICategory extends Document {
 
   // Status information
   status: {
-    code: string; // Status code, e.g., 'published', 'pending', 'in review', etc.
-    message?: string; // Optional status message
-    updatedBy: string; // User who updated the status
-    updatedAt: Date; // Timestamp when the status was last updated
+    code: string;
+    message?: string;
+    updatedBy: string;
+    updatedAt: Date;
   };
 
   // Educational specific fields
@@ -66,12 +66,12 @@ export interface ICategory extends Document {
   duration: string;
 
   // Educational & LMS specific fields
-  difficultyLevel: DifficultyLevel; // Enum for difficulty (e.g., beginner, intermediate, advanced)
-  accessControl: AccessControlObject; // Object defining user roles/groups allowed access
+  difficultyLevel: DifficultyLevel;
+  accessControl: AccessControlObject;
 
   // Quiz specific fields
-  quizQuestions: Schema.Types.ObjectId[]; // IDs of quiz questions associated with the category
-  passingScore: number; // Passing score required to pass the quiz
+  quizQuestions: Schema.Types.ObjectId[];
+  passingScore: number;
 }
 
 const CategorySchema: Schema<ICategory> = new Schema(
