@@ -120,6 +120,29 @@ export class CategoryController {
       const { id } = request.params;
       const { name, description, userId, parentId } = request.body;
 
+      const foundCategory = await CategoryProvider.getCategoryById(id);
+
+      if (!foundCategory || foundCategory.isDeleted) {
+        return sendApiResponse({
+          response,
+          message: 'Category does not exist',
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+      }
+
+      if (parentId) {
+        const category = await CategoryProvider.getCategoryById(parentId);
+
+        if (!category) {
+          sendApiResponse({
+            response,
+            message: 'parent category does not exist',
+            statusCode: STATUS_CODES.BAD_REQUEST,
+          });
+          return;
+        }
+      }
+
       const category = await CategoryProvider.updateCategory(id, {
         name,
         description,
@@ -130,7 +153,7 @@ export class CategoryController {
       if (!category) {
         sendApiResponse({
           response,
-          message: 'Category does not exist',
+          message: 'Failed to update category',
           statusCode: STATUS_CODES.NOT_FOUND,
         });
         return;

@@ -4,6 +4,7 @@ import {
   isValidObjectId,
   validateCategory,
   validateSlug,
+  validateUpdateCategoryFields,
 } from '../../utils/validation';
 import {
   CREATE_CATEGORY_ROUTE,
@@ -39,7 +40,7 @@ categoryRoutes.get(
 
 categoryRoutes.put(
   UPDATE_CATEGORY_ROUTE,
-  validateCategory,
+  validateUpdateCategoryFields,
   isValidObjectId,
   handleValidationErrors,
   validateAccessTokens,

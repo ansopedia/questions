@@ -44,30 +44,25 @@ export class CategoryProvider {
 
   static getCategoryBySlug(slug: string): Promise<ICategory | null> {
     return CategoryModel.findOneAndUpdate(
-      { slug },
+      { slug, isDeleted: false },
       { $inc: { 'analytics.views': 1 } },
       { new: true },
     );
   }
 
   static async getCategoryByParentId(parentId: string | null) {
-    return CategoryModel.find({ parentId });
+    return CategoryModel.find({ parentId, isDeleted: false });
   }
 
   static async updateCategory(
     categoryId: string,
     { name, description, updatedBy, parentId }: IUpdateCategory,
   ): Promise<ICategory | null> {
-    try {
-      const updateCategory = CategoryModel.findByIdAndUpdate(
-        categoryId,
-        { name, description, updatedBy, parentId },
-        { new: true, runValidators: true },
-      );
-      return updateCategory;
-    } catch (error) {
-      return null;
-    }
+    return CategoryModel.findByIdAndUpdate(
+      categoryId,
+      { name, description, updatedBy, parentId },
+      { new: true, runValidators: true },
+    );
   }
 
   static async deleteCategory(categoryId: string) {
