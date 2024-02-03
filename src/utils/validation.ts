@@ -20,6 +20,9 @@ export const validateCategory = [
     .notEmpty()
     .withMessage('Name is required')
     .bail()
+    .isLength({ min: 3, max: 100 })
+    .withMessage('Name must be between 3 and 100 characters')
+    .bail()
     .trim()
     .escape(),
 ];
@@ -27,8 +30,8 @@ export const validateCategory = [
 export const validateUpdateCategoryFields = [
   check('name')
     .optional()
-    .isLength({ max: 255 })
-    .withMessage('Name cannot exceed 255 characters')
+    .isLength({ min: 3, max: 100 })
+    .withMessage('Name must be between 3 and 100 characters')
     .trim()
     .escape(),
   check('description')

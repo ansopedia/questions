@@ -29,13 +29,14 @@ export interface ICategory extends Document {
     likes: number;
     comments: number;
     shares: number;
-    rating: Rating;
+    rating: number;
     favorites: number;
     enrollmentCount: number; // Number of users enrolled in the course
   };
   userInteractions: {
     likes: { userId: string; timestamp: Date }[];
     comments: { userId: string; comment: string; timestamp: Date }[];
+    rating: Rating[];
   };
 
   // Metadata and categorization
@@ -75,13 +76,27 @@ export interface ICategory extends Document {
 
 const CategorySchema: Schema<ICategory> = new Schema(
   {
-    name: { type: String, required: true },
+    name: {
+      type: String,
+      required: true,
+      minlength: 3,
+      maxlength: 100,
+    },
     parentId: { type: Schema.Types.ObjectId, ref: 'Category' },
-    description: { type: String },
+    description: { type: String, maxlength: 500 },
     isDeleted: { type: Boolean, default: false },
     createdBy: { type: String, required: true },
     updatedBy: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
+    analytics: {
+      views: { type: Number, default: 0 },
+      likes: { type: Number, default: 0 },
+      comments: { type: Number, default: 0 },
+      shares: { type: Number, default: 0 },
+      rating: { type: Number, default: 0 },
+      favorites: { type: Number, default: 0 },
+      enrollmentCount: { type: Number, default: 0 },
+    },
   },
   { timestamps: true },
 );

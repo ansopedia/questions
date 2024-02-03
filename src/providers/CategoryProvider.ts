@@ -35,27 +35,23 @@ export class CategoryProvider {
   }
 
   static async getCategories() {
-    return CategoryModel.find().exec();
+    return CategoryModel.find();
   }
 
   static async getCategoryById(categoryId: string): Promise<ICategory | null> {
-    try {
-      return await CategoryModel.findById(categoryId);
-    } catch (error) {
-      return null;
-    }
+    return CategoryModel.findById(categoryId);
   }
 
-  static async getCategoryBySlug(slug: string): Promise<ICategory | null> {
-    try {
-      return await CategoryModel.findOne({ slug }).exec();
-    } catch (error) {
-      return null;
-    }
+  static getCategoryBySlug(slug: string): Promise<ICategory | null> {
+    return CategoryModel.findOneAndUpdate(
+      { slug },
+      { $inc: { 'analytics.views': 1 } },
+      { new: true },
+    );
   }
 
   static async getCategoryByParentId(parentId: string | null) {
-    return await CategoryModel.find({ parentId }).exec();
+    return CategoryModel.find({ parentId });
   }
 
   static async updateCategory(
@@ -66,10 +62,7 @@ export class CategoryProvider {
       const updateCategory = CategoryModel.findByIdAndUpdate(
         categoryId,
         { name, description, updatedBy, parentId },
-        {
-          new: true,
-          runValidators: true,
-        },
+        { new: true, runValidators: true },
       );
       return updateCategory;
     } catch (error) {
