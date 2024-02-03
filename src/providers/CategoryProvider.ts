@@ -65,7 +65,14 @@ export class CategoryProvider {
     );
   }
 
-  static async deleteCategory(categoryId: string) {
-    return CategoryModel.findByIdAndUpdate(categoryId, { isDeleted: true });
+  static async softDeleteCategory(
+    categoryId: string,
+    { updatedBy }: { updatedBy: string },
+  ) {
+    return CategoryModel.findByIdAndUpdate(
+      categoryId,
+      { isDeleted: true, updatedBy },
+      { new: true },
+    );
   }
 }

@@ -176,4 +176,39 @@ export class CategoryController {
       });
     }
   }
+
+  static async softDeleteCategory(request: Request, response: Response) {
+    try {
+      const { id } = request.params;
+      const { userId } = request.body;
+
+      const updatedCategory = await CategoryProvider.softDeleteCategory(id, {
+        updatedBy: userId,
+      });
+
+      if (!updatedCategory) {
+        return sendApiResponse({
+          response,
+          message: 'Category does not exist',
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+      }
+
+      const categoryDto = new CategoryDto(updatedCategory);
+
+      sendApiResponse({
+        response,
+        message: 'Category deleted successfully',
+        statusCode: STATUS_CODES.OK,
+        payload: { category: categoryDto.getCategory() },
+      });
+    } catch (error) {
+      sendApiResponse({
+        response,
+        message: INTERNAL_SERVER_ERROR,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+        errors: error as Error,
+      });
+    }
+  }
 }

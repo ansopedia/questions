@@ -48,6 +48,11 @@ export const isValidObjectId = [
     .matches(/^[a-f\d]{24}$/i)
     .withMessage('Invalid parent id')
     .bail(),
+  check('id')
+    .optional()
+    .matches(/^[a-f\d]{24}$/i)
+    .withMessage('Invalid id')
+    .bail(),
 ];
 
 export const validateSlug = [

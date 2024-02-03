@@ -5,3 +5,5 @@ export const GET_CATEGORIES_ROUTE = `${BASE_URL}/category`;
 export const CREATE_CATEGORY_ROUTE = `${BASE_URL}/category`;
 export const UPDATE_CATEGORY_ROUTE = `${BASE_URL}/category/:id`;
 export const DELETE_CATEGORY_ROUTE = `${BASE_URL}/category/:id`;
+export const RESTORE_CATEGORY_ROUTE = `${BASE_URL}/category/restore/:id`;
+export const SOFT_DELETE_CATEGORY_ROUTE = `${BASE_URL}/category/soft-delete/:id`;

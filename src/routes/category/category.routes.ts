@@ -8,6 +8,7 @@ import {
 } from '../../utils/validation';
 import {
   CREATE_CATEGORY_ROUTE,
+  SOFT_DELETE_CATEGORY_ROUTE,
   GET_CATEGORIES_ROUTE,
   GET_CATEGORY_ROUTE,
   UPDATE_CATEGORY_ROUTE,
@@ -45,4 +46,12 @@ categoryRoutes.put(
   handleValidationErrors,
   validateAccessTokens,
   CategoryController.updateCategory,
+);
+
+categoryRoutes.delete(
+  SOFT_DELETE_CATEGORY_ROUTE,
+  isValidObjectId,
+  handleValidationErrors,
+  validateAccessTokens,
+  CategoryController.softDeleteCategory,
 );
