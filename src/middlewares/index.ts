@@ -4,6 +4,7 @@ import { sendApiResponse } from '../utils/sendApiResponse';
 import { STATUS_CODES } from '../constants/statusCode/status-code.constants';
 import { INTERNAL_SERVER_ERROR, NODE_ENV } from '../constants';
 import { VERIFY_ACCESS_TOKEN_ROUTE } from '../constants/routes/services.constants';
+import { VALIDATION_ERROR } from '../constants/common';
 
 export const handleValidationErrors = (
   req: Request,
@@ -15,7 +16,7 @@ export const handleValidationErrors = (
     sendApiResponse({
       response,
       statusCode: 422,
-      message: 'Validation error',
+      message: VALIDATION_ERROR,
       payload: { errors: errors.array() },
     });
     return;

@@ -4,6 +4,15 @@ import { CategoryProvider } from '../providers/CategoryProvider';
 import { STATUS_CODES } from '../constants/statusCode/status-code.constants';
 import { INTERNAL_SERVER_ERROR } from '../constants';
 import { CategoryDto } from '../dto/CategoryDto';
+import {
+  CATEGORY_CREATED_SUCCESSFULLY,
+  CATEGORY_DELETED_SUCCESSFULLY,
+  CATEGORY_FETCHED_SUCCESSFULLY,
+  CATEGORY_NOT_FOUND_ERROR,
+  CATEGORY_UPDATED_SUCCESSFULLY,
+  FAILED_TO_UPDATE_CATEGORY,
+  PARENT_CATEGORY_NOT_FOUND_ERROR,
+} from '../constants/category';
 
 export class CategoryController {
   static async createCategory(request: Request, response: Response) {
@@ -16,7 +25,7 @@ export class CategoryController {
         if (!category) {
           return sendApiResponse({
             response,
-            message: 'parent category does not exist',
+            message: PARENT_CATEGORY_NOT_FOUND_ERROR,
             statusCode: STATUS_CODES.BAD_REQUEST,
           });
         }
@@ -33,7 +42,7 @@ export class CategoryController {
 
       sendApiResponse({
         response,
-        message: 'Category created successfully',
+        message: CATEGORY_CREATED_SUCCESSFULLY,
         statusCode: STATUS_CODES.CREATED,
         payload: { category: categoryDto.getCategory() },
       });
@@ -57,7 +66,7 @@ export class CategoryController {
 
       sendApiResponse({
         response,
-        message: 'Categories fetched successfully',
+        message: CATEGORY_FETCHED_SUCCESSFULLY,
         statusCode: STATUS_CODES.OK,
         payload: {
           categories: categoryDto,
@@ -82,7 +91,7 @@ export class CategoryController {
       if (!category) {
         return sendApiResponse({
           response,
-          message: 'Category does not exist',
+          message: CATEGORY_NOT_FOUND_ERROR,
           statusCode: STATUS_CODES.NOT_FOUND,
         });
       }
@@ -100,7 +109,7 @@ export class CategoryController {
 
       sendApiResponse({
         response,
-        message: 'Category fetched successfully',
+        message: CATEGORY_FETCHED_SUCCESSFULLY,
         statusCode: STATUS_CODES.OK,
         payload: { category: categoryWithChildren },
       });
@@ -124,7 +133,7 @@ export class CategoryController {
       if (!foundCategory || foundCategory.isDeleted) {
         return sendApiResponse({
           response,
-          message: 'Category does not exist',
+          message: CATEGORY_NOT_FOUND_ERROR,
           statusCode: STATUS_CODES.NOT_FOUND,
         });
       }
@@ -135,7 +144,7 @@ export class CategoryController {
         if (!category) {
           sendApiResponse({
             response,
-            message: 'parent category does not exist',
+            message: PARENT_CATEGORY_NOT_FOUND_ERROR,
             statusCode: STATUS_CODES.BAD_REQUEST,
           });
           return;
@@ -152,7 +161,7 @@ export class CategoryController {
       if (!category) {
         sendApiResponse({
           response,
-          message: 'Failed to update category',
+          message: FAILED_TO_UPDATE_CATEGORY,
           statusCode: STATUS_CODES.NOT_FOUND,
         });
         return;
@@ -162,7 +171,7 @@ export class CategoryController {
 
       sendApiResponse({
         response,
-        message: 'Category updated successfully',
+        message: CATEGORY_UPDATED_SUCCESSFULLY,
         statusCode: STATUS_CODES.OK,
         payload: { category: categoryDto.getCategory() },
       });
@@ -188,7 +197,7 @@ export class CategoryController {
       if (!updatedCategory) {
         return sendApiResponse({
           response,
-          message: 'Category does not exist',
+          message: CATEGORY_NOT_FOUND_ERROR,
           statusCode: STATUS_CODES.NOT_FOUND,
         });
       }
@@ -197,7 +206,7 @@ export class CategoryController {
 
       sendApiResponse({
         response,
-        message: 'Category deleted successfully',
+        message: CATEGORY_DELETED_SUCCESSFULLY,
         statusCode: STATUS_CODES.OK,
         payload: { category: categoryDto.getCategory() },
       });

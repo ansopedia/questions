@@ -1,4 +1,16 @@
 import { check } from 'express-validator';
+import {
+  CATEGORY_NAME_LENGTH_ERROR,
+  CATEGORY_NAME_REQUIRED_ERROR,
+  DESCRIPTION_LENGTH_ERROR,
+} from '../constants/category';
+
+import {
+  INVALID_SLUG_ERROR,
+  INVALID_OBJECT_ID_ERROR,
+  SLUG_LENGTH_ERROR,
+  SLUG_REQUIRED_ERROR,
+} from '../constants/common';
 
 export const validateQuestion = [
   check('title')
@@ -18,10 +30,10 @@ export const validateQuestion = [
 export const validateCategory = [
   check('name')
     .notEmpty()
-    .withMessage('Name is required')
+    .withMessage(CATEGORY_NAME_REQUIRED_ERROR)
     .bail()
     .isLength({ min: 3, max: 100 })
-    .withMessage('Name must be between 3 and 100 characters')
+    .withMessage(CATEGORY_NAME_LENGTH_ERROR)
     .bail()
     .trim()
     .escape(),
@@ -31,13 +43,13 @@ export const validateUpdateCategoryFields = [
   check('name')
     .optional()
     .isLength({ min: 3, max: 100 })
-    .withMessage('Name must be between 3 and 100 characters')
+    .withMessage(CATEGORY_NAME_LENGTH_ERROR)
     .trim()
     .escape(),
   check('description')
     .optional()
     .isLength({ max: 500 })
-    .withMessage('Description cannot exceed 500 characters')
+    .withMessage(DESCRIPTION_LENGTH_ERROR)
     .trim()
     .escape(),
 ];
@@ -46,24 +58,22 @@ export const isValidObjectId = [
   check('parentId')
     .optional()
     .matches(/^[a-f\d]{24}$/i)
-    .withMessage('Invalid parent id')
+    .withMessage(INVALID_OBJECT_ID_ERROR)
     .bail(),
   check('id')
     .optional()
     .matches(/^[a-f\d]{24}$/i)
-    .withMessage('Invalid id')
+    .withMessage(INVALID_OBJECT_ID_ERROR)
     .bail(),
 ];
 
 export const validateSlug = [
   check('slug')
     .notEmpty()
-    .withMessage('Slug is required')
+    .withMessage(SLUG_REQUIRED_ERROR)
     .isLength({ min: 3, max: 255 })
-    .withMessage('Slug must be between 3 and 255 characters')
+    .withMessage(SLUG_LENGTH_ERROR)
     .matches(/^[a-z0-9-]+$/)
-    .withMessage(
-      'Slug must only contain lowercase letters, numbers, and hyphens',
-    )
+    .withMessage(INVALID_SLUG_ERROR)
     .escape(),
 ];
