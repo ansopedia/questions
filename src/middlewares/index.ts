@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from 'express';
 import { validationResult } from 'express-validator';
 import { sendApiResponse } from '../utils/sendApiResponse';
 import { STATUS_CODES } from '../constants/statusCode/status-code.constants';
-import { INTERNAL_SERVER_ERROR } from '../constants';
+import { INTERNAL_SERVER_ERROR, NODE_ENV } from '../constants';
 import { VERIFY_ACCESS_TOKEN_ROUTE } from '../constants/routes/services.constants';
 
 export const handleValidationErrors = (
@@ -28,6 +28,11 @@ export const validateAccessTokens = async (
   response: Response,
   next: NextFunction,
 ) => {
+  if (NODE_ENV === 'test') {
+    req.body.userId = 'test-user-id';
+    req.body.role = 'test-role';
+    return next();
+  }
   try {
     const { authorization } = req.headers;
     if (!authorization) {

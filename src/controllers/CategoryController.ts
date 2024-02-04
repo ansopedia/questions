@@ -14,12 +14,11 @@ export class CategoryController {
         const category = await CategoryProvider.getCategoryById(parentId);
 
         if (!category) {
-          sendApiResponse({
+          return sendApiResponse({
             response,
             message: 'parent category does not exist',
             statusCode: STATUS_CODES.BAD_REQUEST,
           });
-          return;
         }
       }
 
