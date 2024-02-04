@@ -52,6 +52,13 @@ export const validateUpdateCategoryFields = [
     .withMessage(DESCRIPTION_LENGTH_ERROR)
     .trim()
     .escape(),
+  check('slug')
+    .optional()
+    .isLength({ min: 3, max: 255 })
+    .withMessage(SLUG_LENGTH_ERROR)
+    .matches(/^[a-z0-9-]+$/)
+    .withMessage(INVALID_SLUG_ERROR)
+    .escape(),
 ];
 
 export const isValidObjectId = [

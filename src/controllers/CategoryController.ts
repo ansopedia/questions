@@ -13,6 +13,7 @@ import {
   FAILED_TO_UPDATE_CATEGORY,
   PARENT_CATEGORY_NOT_FOUND_ERROR,
 } from '../constants/category';
+import { SLUG_EXISTS_ERROR } from '../constants/common';
 
 export class CategoryController {
   static async createCategory(request: Request, response: Response) {
@@ -126,7 +127,7 @@ export class CategoryController {
   static async updateCategory(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const { name, description, userId, parentId } = request.body;
+      const { name, description, userId, parentId, slug } = request.body;
 
       const foundCategory = await CategoryProvider.getCategoryById(id);
 
@@ -151,11 +152,23 @@ export class CategoryController {
         }
       }
 
+      if (slug) {
+        const isSlugExists = await CategoryProvider.isSlugExist(slug);
+        if (isSlugExists) {
+          return sendApiResponse({
+            response,
+            message: SLUG_EXISTS_ERROR,
+            statusCode: STATUS_CODES.CONFLICT,
+          });
+        }
+      }
+
       const category = await CategoryProvider.updateCategory(id, {
         name,
         description,
         updatedBy: userId,
         parentId,
+        slug,
       });
 
       if (!category) {

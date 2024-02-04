@@ -13,6 +13,7 @@ interface IUpdateCategory {
   description: string;
   updatedBy: string;
   parentId?: string;
+  slug?: string;
 }
 
 export class CategoryProvider {
@@ -42,12 +43,16 @@ export class CategoryProvider {
     return CategoryModel.findById(categoryId);
   }
 
-  static getCategoryBySlug(slug: string): Promise<ICategory | null> {
+  static async getCategoryBySlug(slug: string): Promise<ICategory | null> {
     return CategoryModel.findOneAndUpdate(
       { slug, isDeleted: false },
       { $inc: { 'analytics.views': 1 } },
       { new: true },
     );
+  }
+
+  static async isSlugExist(slug: string) {
+    return CategoryModel.findOne({ slug });
   }
 
   static async getCategoryByParentId(parentId: string | null) {
@@ -56,11 +61,11 @@ export class CategoryProvider {
 
   static async updateCategory(
     categoryId: string,
-    { name, description, updatedBy, parentId }: IUpdateCategory,
+    { name, description, updatedBy, parentId, slug }: IUpdateCategory,
   ): Promise<ICategory | null> {
     return CategoryModel.findByIdAndUpdate(
       categoryId,
-      { name, description, updatedBy, parentId },
+      { name, description, updatedBy, parentId, slug },
       { new: true, runValidators: true },
     );
   }
