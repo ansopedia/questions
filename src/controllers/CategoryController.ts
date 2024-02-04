@@ -57,9 +57,13 @@ export class CategoryController {
     }
   }
 
-  static async getCategories(_: Request, response: Response) {
+  static async getCategories(request: Request, response: Response) {
     try {
-      const categories = await CategoryProvider.getCategoryByParentId(null);
+      const { offset, limit } = request.query;
+      const categories = await CategoryProvider.getCategoryByParentId(null, {
+        offset: Number(offset),
+        limit: Number(limit),
+      });
 
       const categoryDto = categories.map((category) =>
         new CategoryDto(category).getCategory(),
@@ -86,6 +90,7 @@ export class CategoryController {
   static async getCategoryBySlug(request: Request, response: Response) {
     try {
       const { slug } = request.params;
+      const { offset, limit } = request.query;
 
       const category = await CategoryProvider.getCategoryBySlug(slug);
 
@@ -99,6 +104,7 @@ export class CategoryController {
 
       const children = await CategoryProvider.getCategoryByParentId(
         category._id,
+        { offset: Number(offset), limit: Number(limit) },
       );
 
       const categoryDto = new CategoryDto(category).getCategory();

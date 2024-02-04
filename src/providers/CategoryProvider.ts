@@ -55,8 +55,13 @@ export class CategoryProvider {
     return CategoryModel.findOne({ slug });
   }
 
-  static async getCategoryByParentId(parentId: string | null) {
-    return CategoryModel.find({ parentId, isDeleted: false });
+  static async getCategoryByParentId(
+    parentId: string | null,
+    { offset = 0, limit = 10 }: { offset?: number; limit?: number },
+  ) {
+    return CategoryModel.find({ parentId, isDeleted: false })
+      .limit(limit)
+      .skip(offset);
   }
 
   static async updateCategory(
