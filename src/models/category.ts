@@ -97,9 +97,32 @@ const CategorySchema: Schema<ICategory> = new Schema(
       favorites: { type: Number, default: 0 },
       enrollmentCount: { type: Number, default: 0 },
     },
+    accessControl: {
+      roles: {
+        type: [String],
+        default: ['admin', 'super-admin', 'editor'],
+      },
+
+      individualUsers: {
+        type: [String],
+        default: [],
+      },
+    },
   },
   { timestamps: true },
 );
+
+CategorySchema.pre('save', function (next) {
+  if (this.isNew) {
+    this.accessControl.individualUsers = [this.createdBy];
+  }
+  this.accessControl.individualUsers = [
+    ...new Set(this.accessControl.individualUsers),
+  ];
+  this.accessControl.roles = [...new Set(this.accessControl.roles)];
+
+  next();
+});
 
 export const CategoryModel = mongoose.model<ICategory>(
   'Category',

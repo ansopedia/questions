@@ -11,9 +11,11 @@ import {
   CATEGORY_NOT_FOUND_ERROR,
   CATEGORY_UPDATED_SUCCESSFULLY,
   FAILED_TO_UPDATE_CATEGORY,
+  NOT_AUTHORIZED_TO_UPDATE_CATEGORY,
   PARENT_CATEGORY_NOT_FOUND_ERROR,
 } from '../constants/category';
 import { SLUG_EXISTS_ERROR } from '../constants/common';
+import { isAuthorizedToPerformAction } from '../helpers';
 
 export class CategoryController {
   static async createCategory(request: Request, response: Response) {
@@ -133,7 +135,7 @@ export class CategoryController {
   static async updateCategory(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const { name, description, userId, parentId, slug } = request.body;
+      const { name, description, userId, parentId, slug, role } = request.body;
 
       const foundCategory = await CategoryProvider.getCategoryById(id);
 
@@ -167,6 +169,14 @@ export class CategoryController {
             statusCode: STATUS_CODES.CONFLICT,
           });
         }
+      }
+
+      if (!isAuthorizedToPerformAction(foundCategory, userId, role)) {
+        return sendApiResponse({
+          response,
+          message: NOT_AUTHORIZED_TO_UPDATE_CATEGORY,
+          statusCode: STATUS_CODES.UNAUTHORIZED,
+        });
       }
 
       const category = await CategoryProvider.updateCategory(id, {

@@ -13,6 +13,8 @@ export const PARENT_CATEGORY_NOT_FOUND_ERROR = 'Parent category does not exist';
 export const INVALID_CATEGORY_PARENT_ERROR = 'Invalid parent category';
 
 export const FAILED_TO_UPDATE_CATEGORY = 'Failed to update category';
+export const NOT_AUTHORIZED_TO_UPDATE_CATEGORY =
+  'You are not authorized to update this category';
 
 // category success messages
 export const CATEGORY_CREATED_SUCCESSFULLY = 'Category created successfully';

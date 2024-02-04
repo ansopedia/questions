@@ -1,7 +1,6 @@
 export type AccessControlObject = {
-  roles?: string[];
-  groups?: string[];
-  individualUsers?: string[];
+  roles: string[];
+  individualUsers: string[];
 };
 
 export type Rating = {
