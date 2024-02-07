@@ -9,11 +9,12 @@ interface ICreateCategory {
 }
 
 interface IUpdateCategory {
-  name: string;
-  description: string;
   updatedBy: string;
+  name?: string;
+  description?: string;
   parentId?: string;
   slug?: string;
+  featuredImage?: string;
 }
 
 export class CategoryProvider {
@@ -66,11 +67,18 @@ export class CategoryProvider {
 
   static async updateCategory(
     categoryId: string,
-    { name, description, updatedBy, parentId, slug }: IUpdateCategory,
+    {
+      name,
+      description,
+      updatedBy,
+      parentId,
+      slug,
+      featuredImage,
+    }: IUpdateCategory,
   ): Promise<ICategory | null> {
     return CategoryModel.findByIdAndUpdate(
       categoryId,
-      { name, description, updatedBy, parentId, slug },
+      { name, description, updatedBy, parentId, slug, featuredImage },
       { new: true, runValidators: true },
     );
   }

@@ -3,6 +3,7 @@ import express from 'express';
 import {
   isValidObjectId,
   validateCategory,
+  validateImageUpload,
   validateSlug,
   validateUpdateCategoryFields,
 } from '../../utils/validation';
@@ -12,6 +13,7 @@ import {
   GET_CATEGORIES_ROUTE,
   GET_CATEGORY_ROUTE,
   UPDATE_CATEGORY_ROUTE,
+  UPLOAD_CATEGORY_IMAGE_ROUTE,
 } from '../../constants/routes/category.constants';
 import {
   handleValidationErrors,
@@ -54,4 +56,12 @@ categoryRoutes.delete(
   handleValidationErrors,
   validateAccessTokens,
   CategoryController.softDeleteCategory,
+);
+
+categoryRoutes.post(
+  UPLOAD_CATEGORY_IMAGE_ROUTE,
+  validateImageUpload,
+  handleValidationErrors,
+  validateAccessTokens,
+  CategoryController.uploadCategoryImage,
 );

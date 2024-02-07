@@ -17,6 +17,7 @@ export class CategoryDto {
       parentId: this.category.parentId,
       slug: this.category.slug,
       analytics: this.category.analytics,
+      featuredImage: this.category.featuredImage,
     };
   }
 }

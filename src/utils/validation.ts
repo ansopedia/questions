@@ -84,3 +84,33 @@ export const validateSlug = [
     .withMessage(INVALID_SLUG_ERROR)
     .escape(),
 ];
+
+export const validateImageUpload = [
+  check('id')
+    .notEmpty()
+    .withMessage('Category ID is required')
+    .bail()
+    .matches(/^[a-f\d]{24}$/i)
+    .withMessage(INVALID_OBJECT_ID_ERROR)
+    .bail(),
+  check('image').custom((_, { req }) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      throw new Error('No files were uploaded.');
+    }
+
+    const uploadedImage = req.files.image;
+
+    if (!uploadedImage) {
+      throw new Error('Field name should be "image".');
+    }
+
+    // Check the file type
+    if (!uploadedImage.mimetype.startsWith('image/')) {
+      throw new Error('File is not an image.');
+    }
+
+    req.files.file = uploadedImage;
+
+    return true;
+  }),
+];

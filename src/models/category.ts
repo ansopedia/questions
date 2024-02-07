@@ -88,6 +88,7 @@ const CategorySchema: Schema<ICategory> = new Schema(
     createdBy: { type: String, required: true },
     updatedBy: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
+    featuredImage: { type: String },
     analytics: {
       views: { type: Number, default: 0 },
       likes: { type: Number, default: 0 },

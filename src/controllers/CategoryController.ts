@@ -1,4 +1,7 @@
 import { Request, Response } from 'express';
+import { UploadedFile } from 'express-fileupload';
+import { v2 as cloudinary } from 'cloudinary';
+
 import { sendApiResponse } from '../utils/sendApiResponse';
 import { CategoryProvider } from '../providers/CategoryProvider';
 import { STATUS_CODES } from '../constants/statusCode/status-code.constants';
@@ -245,6 +248,64 @@ export class CategoryController {
         message: INTERNAL_SERVER_ERROR,
         statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         errors: error as Error,
+      });
+    }
+  }
+
+  static async uploadCategoryImage(request: Request, response: Response) {
+    const uploadedFile = request.files?.file as UploadedFile;
+    const fileBuffer = uploadedFile.data;
+    const fileStr = fileBuffer.toString('base64');
+    const { id } = request.params;
+    const { userId } = request.body;
+
+    try {
+      const category = await CategoryProvider.getCategoryById(id);
+
+      if (!category) {
+        return sendApiResponse({
+          response,
+          message: CATEGORY_NOT_FOUND_ERROR,
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+      }
+
+      const result = await cloudinary.uploader.upload(
+        `data:${uploadedFile.mimetype};base64,${fileStr}`,
+        {
+          folder: 'ansopedia/category/featured-images',
+          public_id: id,
+          overwrite: true,
+          resource_type: 'image',
+        },
+      );
+
+      const updateCategory = await CategoryProvider.updateCategory(id, {
+        updatedBy: userId,
+        featuredImage: result.url,
+      });
+
+      if (!updateCategory) {
+        return sendApiResponse({
+          response,
+          message: FAILED_TO_UPDATE_CATEGORY,
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+      }
+
+      const categoryDto = new CategoryDto(updateCategory).getCategory();
+
+      return sendApiResponse({
+        response,
+        message: 'File uploaded successfully',
+        statusCode: STATUS_CODES.OK,
+        payload: { category: categoryDto },
+      });
+    } catch (error) {
+      return sendApiResponse({
+        response,
+        message: 'Upload failed',
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
       });
     }
   }
