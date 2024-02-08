@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
-import { v2 as cloudinary } from 'cloudinary';
 
 import { sendApiResponse } from '../utils/sendApiResponse';
 import { CategoryProvider } from '../providers/CategoryProvider';
@@ -19,6 +18,7 @@ import {
 } from '../constants/category';
 import { SLUG_EXISTS_ERROR } from '../constants/common';
 import { isAuthorizedToPerformAction } from '../helpers';
+import { uploadFileToCloudinary } from '../utils/uploadFile';
 
 export class CategoryController {
   static async createCategory(request: Request, response: Response) {
@@ -70,9 +70,7 @@ export class CategoryController {
         limit: Number(limit),
       });
 
-      const categoryDto = categories.map((category) =>
-        new CategoryDto(category).getCategory(),
-      );
+      const categoryDto = categories.map((category) => new CategoryDto(category).getCategory());
 
       sendApiResponse({
         response,
@@ -107,10 +105,10 @@ export class CategoryController {
         });
       }
 
-      const children = await CategoryProvider.getCategoryByParentId(
-        category._id,
-        { offset: Number(offset), limit: Number(limit) },
-      );
+      const children = await CategoryProvider.getCategoryByParentId(category._id, {
+        offset: Number(offset),
+        limit: Number(limit),
+      });
 
       const categoryDto = new CategoryDto(category).getCategory();
 
@@ -154,12 +152,11 @@ export class CategoryController {
         const category = await CategoryProvider.getCategoryById(parentId);
 
         if (!category) {
-          sendApiResponse({
+          return sendApiResponse({
             response,
             message: PARENT_CATEGORY_NOT_FOUND_ERROR,
             statusCode: STATUS_CODES.BAD_REQUEST,
           });
-          return;
         }
       }
 
@@ -191,12 +188,11 @@ export class CategoryController {
       });
 
       if (!category) {
-        sendApiResponse({
+        return sendApiResponse({
           response,
           message: FAILED_TO_UPDATE_CATEGORY,
           statusCode: STATUS_CODES.NOT_FOUND,
         });
-        return;
       }
 
       const categoryDto = new CategoryDto(category);
@@ -254,8 +250,7 @@ export class CategoryController {
 
   static async uploadCategoryImage(request: Request, response: Response) {
     const uploadedFile = request.files?.file as UploadedFile;
-    const fileBuffer = uploadedFile.data;
-    const fileStr = fileBuffer.toString('base64');
+
     const { id } = request.params;
     const { userId } = request.body;
 
@@ -270,15 +265,11 @@ export class CategoryController {
         });
       }
 
-      const result = await cloudinary.uploader.upload(
-        `data:${uploadedFile.mimetype};base64,${fileStr}`,
-        {
-          folder: 'ansopedia/category/featured-images',
-          public_id: id,
-          overwrite: true,
-          resource_type: 'image',
-        },
-      );
+      const result = await uploadFileToCloudinary({
+        folder: 'ansopedia/category/featured-images',
+        public_id: id,
+        uploadedFile,
+      });
 
       const updateCategory = await CategoryProvider.updateCategory(id, {
         updatedBy: userId,

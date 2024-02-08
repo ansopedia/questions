@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { CategoryType, DifficultyLevel } from '../utils/enums';
-import { AccessControlObject, Rating } from '../types/types';
+import { AccessControlObject } from '../types/types';
 
 // TODO: Add validation for fields
 // If the type is 'quiz', then the category must have a passing score
@@ -29,14 +29,12 @@ export interface ICategory extends Document {
     likes: number;
     comments: number;
     shares: number;
-    rating: number;
     favorites: number;
     enrollments: number;
   };
   userInteractions: {
     likes: { userId: string; timestamp: Date }[];
     comments: { userId: string; comment: string; timestamp: Date }[];
-    ratings: Rating[];
   };
 
   // Metadata and categorization
@@ -117,15 +115,10 @@ CategorySchema.pre('save', function (next) {
   if (this.isNew) {
     this.accessControl.individualUsers = [this.createdBy];
   }
-  this.accessControl.individualUsers = [
-    ...new Set(this.accessControl.individualUsers),
-  ];
+  this.accessControl.individualUsers = [...new Set(this.accessControl.individualUsers)];
   this.accessControl.roles = [...new Set(this.accessControl.roles)];
 
   next();
 });
 
-export const CategoryModel = mongoose.model<ICategory>(
-  'Category',
-  CategorySchema,
-);
+export const CategoryModel = mongoose.model<ICategory>('Category', CategorySchema);
