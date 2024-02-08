@@ -14,11 +14,9 @@ import {
   GET_CATEGORY_ROUTE,
   UPDATE_CATEGORY_ROUTE,
   UPLOAD_CATEGORY_IMAGE_ROUTE,
+  ADD_COLLABORATOR_ROUTE,
 } from '../../constants/routes/category.constants';
-import {
-  handleValidationErrors,
-  validateAccessTokens,
-} from '../../middlewares';
+import { handleValidationErrors, validateAccessTokens } from '../../middlewares';
 import { CategoryController } from '../../controllers/CategoryController';
 
 export const categoryRoutes = express.Router();
@@ -64,4 +62,12 @@ categoryRoutes.post(
   handleValidationErrors,
   validateAccessTokens,
   CategoryController.uploadCategoryImage,
+);
+
+categoryRoutes.post(
+  ADD_COLLABORATOR_ROUTE,
+  isValidObjectId,
+  handleValidationErrors,
+  validateAccessTokens,
+  CategoryController.addCollaborator,
 );

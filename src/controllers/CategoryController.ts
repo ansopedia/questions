@@ -12,6 +12,7 @@ import {
   CATEGORY_FETCHED_SUCCESSFULLY,
   CATEGORY_NOT_FOUND_ERROR,
   CATEGORY_UPDATED_SUCCESSFULLY,
+  COLLABORATOR_ADDED_SUCCESSFULLY,
   FAILED_TO_UPDATE_CATEGORY,
   NOT_AUTHORIZED_TO_UPDATE_CATEGORY,
   PARENT_CATEGORY_NOT_FOUND_ERROR,
@@ -297,6 +298,49 @@ export class CategoryController {
         response,
         message: 'Upload failed',
         statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  static async addCollaborator(request: Request, response: Response) {
+    const { id } = request.params;
+    const { userId: collaborator } = request.body;
+
+    try {
+      const category = await CategoryProvider.getCategoryById(id);
+
+      if (!category) {
+        return sendApiResponse({
+          response,
+          message: CATEGORY_NOT_FOUND_ERROR,
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+      }
+
+      const updatedCategory = await CategoryProvider.addCollaborator(id, collaborator);
+
+      if (!updatedCategory) {
+        return sendApiResponse({
+          response,
+          message: FAILED_TO_UPDATE_CATEGORY,
+          statusCode: STATUS_CODES.NOT_FOUND,
+        });
+      }
+
+      const categoryDto = new CategoryDto(updatedCategory).getCategory();
+
+      sendApiResponse({
+        response,
+        message: COLLABORATOR_ADDED_SUCCESSFULLY,
+        statusCode: STATUS_CODES.OK,
+        payload: { category: categoryDto },
+      });
+    } catch (error) {
+      sendApiResponse({
+        response,
+        message: INTERNAL_SERVER_ERROR,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+        errors: error as Error,
       });
     }
   }

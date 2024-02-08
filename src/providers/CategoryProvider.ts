@@ -18,12 +18,7 @@ interface IUpdateCategory {
 }
 
 export class CategoryProvider {
-  static async createCategory({
-    name,
-    description,
-    createdBy,
-    parentId,
-  }: ICreateCategory) {
+  static async createCategory({ name, description, createdBy, parentId }: ICreateCategory) {
     const slug = await generateUniqueSlug(name, CategoryModel);
     const createdCategory = new CategoryModel({
       name,
@@ -58,23 +53,18 @@ export class CategoryProvider {
 
   static async getCategoryByParentId(
     parentId: string | null,
-    { offset = 0, limit = 10 }: { offset?: number; limit?: number },
+    {
+      offset = 0,
+      limit = 10,
+      isDeleted = false,
+    }: { offset?: number; limit?: number; isDeleted?: boolean },
   ) {
-    return CategoryModel.find({ parentId, isDeleted: false })
-      .limit(limit)
-      .skip(offset);
+    return CategoryModel.find({ parentId, isDeleted }).limit(limit).skip(offset);
   }
 
   static async updateCategory(
     categoryId: string,
-    {
-      name,
-      description,
-      updatedBy,
-      parentId,
-      slug,
-      featuredImage,
-    }: IUpdateCategory,
+    { name, description, updatedBy, parentId, slug, featuredImage }: IUpdateCategory,
   ): Promise<ICategory | null> {
     return CategoryModel.findByIdAndUpdate(
       categoryId,
@@ -83,10 +73,16 @@ export class CategoryProvider {
     );
   }
 
-  static async softDeleteCategory(
+  static async addCollaborator(
     categoryId: string,
-    { updatedBy }: { updatedBy: string },
-  ) {
+    collaborator: string,
+  ): Promise<ICategory | null> {
+    return CategoryModel.findByIdAndUpdate(categoryId, {
+      $addToSet: { 'accessControl.collaborators': collaborator },
+    });
+  }
+
+  static async softDeleteCategory(categoryId: string, { updatedBy }: { updatedBy: string }) {
     return CategoryModel.findByIdAndUpdate(
       categoryId,
       { isDeleted: true, updatedBy },

@@ -101,8 +101,7 @@ const CategorySchema: Schema<ICategory> = new Schema(
         type: [String],
         default: ['admin', 'super-admin', 'editor'],
       },
-
-      individualUsers: {
+      collaborators: {
         type: [String],
         default: [],
       },
@@ -113,9 +112,9 @@ const CategorySchema: Schema<ICategory> = new Schema(
 
 CategorySchema.pre('save', function (next) {
   if (this.isNew) {
-    this.accessControl.individualUsers = [this.createdBy];
+    this.accessControl.collaborators = [this.createdBy];
   }
-  this.accessControl.individualUsers = [...new Set(this.accessControl.individualUsers)];
+  this.accessControl.collaborators = [...new Set(this.accessControl.collaborators)];
   this.accessControl.roles = [...new Set(this.accessControl.roles)];
 
   next();

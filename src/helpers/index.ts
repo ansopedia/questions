@@ -1,15 +1,15 @@
 interface AccessControl {
-  individualUsers?: string[];
+  collaborators?: string[];
   roles?: string[];
 }
 
 export function isAuthorizedToPerformAction(
-  category: { accessControl: AccessControl },
+  resource: { accessControl: AccessControl },
   userId: string,
   role: string,
 ) {
   return (
-    new Set(category.accessControl.individualUsers).has(userId) ||
-    new Set(category.accessControl.roles).has(role)
+    new Set(resource.accessControl.collaborators).has(userId) ||
+    new Set(resource.accessControl.roles).has(role)
   );
 }

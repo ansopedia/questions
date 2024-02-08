@@ -13,18 +13,8 @@ import {
 } from '../constants/common';
 
 export const validateQuestion = [
-  check('title')
-    .notEmpty()
-    .withMessage('Title is required')
-    .bail()
-    .trim()
-    .escape(),
-  check('createdBy')
-    .notEmpty()
-    .withMessage('Author is required')
-    .bail()
-    .trim()
-    .escape(),
+  check('title').notEmpty().withMessage('Title is required').bail().trim().escape(),
+  check('createdBy').notEmpty().withMessage('Author is required').bail().trim().escape(),
 ];
 
 export const validateCategory = [
@@ -40,6 +30,17 @@ export const validateCategory = [
 ];
 
 export const validateUpdateCategoryFields = [
+  check('name').custom((_, { req }) => {
+    // Check if at least one of the fields is present
+    if (
+      req.body.name === undefined &&
+      req.body.description === undefined &&
+      req.body.slug === undefined
+    ) {
+      throw new Error('At least one of name, description, or slug must be present');
+    }
+    return true;
+  }),
   check('name')
     .optional()
     .isLength({ min: 3, max: 100 })
