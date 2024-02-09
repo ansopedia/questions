@@ -180,10 +180,9 @@ export class CategoryController {
         });
       }
 
-      const category = await CategoryProvider.updateCategory(id, {
+      const category = await CategoryProvider.updateCategory(id, userId, {
         name,
         description,
-        updatedBy: userId,
         parentId,
         slug,
       });
@@ -272,8 +271,7 @@ export class CategoryController {
         uploadedFile,
       });
 
-      const updateCategory = await CategoryProvider.updateCategory(id, {
-        updatedBy: userId,
+      const updateCategory = await CategoryProvider.updateCategory(id, userId, {
         featuredImage: result.url,
       });
 

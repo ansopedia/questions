@@ -2,12 +2,6 @@ import mongoose, { Document, Schema } from 'mongoose';
 import { CategoryType, DifficultyLevel } from '../utils/enums';
 import { AccessControlObject } from '../types/types';
 
-// TODO: Add validation for fields
-// If the type is 'quiz', then the category must have a passing score
-// If the type is 'quiz', then the category must have a list of quiz questions
-// If the type is 'course', then only user can be enrolled in the course
-// If the type is 'subject', then the category must have a difficulty level
-
 export interface ICategory extends Document {
   // Basic category information
   name: string;
@@ -22,6 +16,8 @@ export interface ICategory extends Document {
   // Tracking creators and updaters
   createdBy: string;
   updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 
   // Analytics and user interactions
   analytics: {
@@ -66,10 +62,6 @@ export interface ICategory extends Document {
   // Educational & LMS specific fields
   difficultyLevel: DifficultyLevel;
   accessControl: AccessControlObject;
-
-  // Quiz specific fields
-  quizQuestions: Schema.Types.ObjectId[];
-  passingScore: number;
 }
 
 const CategorySchema: Schema<ICategory> = new Schema(
