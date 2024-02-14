@@ -1,8 +1,7 @@
-import express, { Request, Response } from 'express';
-const routes = express.Router();
+import express from 'express';
+import questionRoutes from './question';
+import { categoryRoutes } from './category/category.routes';
 
-routes.get('/', (_: Request, res: Response) => {
-  res.send('Hello World!');
-});
+export const routes = express.Router();
 
-export default routes;
+routes.use(questionRoutes, categoryRoutes);

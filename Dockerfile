@@ -9,11 +9,10 @@ FROM node:${NODE_VERSION}-alpine as base
 WORKDIR /usr/src/app
 
 # Install pnpm.
-RUN --mount=type=cache,target=/root/.npm \
-    npm install -g pnpm@${PNPM_VERSION}
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 ################################################################################
-# Create a stage for installing production dependecies.
+# Create a stage for installing production dependencies.
 FROM base as deps
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
@@ -38,6 +37,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
+
 # Run the build script.
 RUN pnpm run build
 
@@ -49,8 +49,13 @@ FROM base as final
 # Use production node environment by default.
 ENV NODE_ENV production
 
-# Run the application as a non-root user.
-USER node
+# Create a new user 'appuser' and set it as the current user.
+RUN adduser -D appuser
+
+# Create the log directory and change its ownership to 'appuser'.
+RUN mkdir -p /usr/src/app/log && chown -R appuser:appuser /usr/src/app
+
+USER appuser
 
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
@@ -60,9 +65,8 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/build ./build
 
-
 # Expose the port that the application listens on.
-EXPOSE 8000
+EXPOSE 8001
 
 # Run the application.
 CMD pnpm start

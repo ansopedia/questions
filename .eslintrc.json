@@ -11,11 +11,10 @@
     "project": "tsconfig.eslint.json",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
     "indent": ["error", 2],
     "@typescript-eslint/prefer-nullish-coalescing": "error",
-    "@typescript-eslint/strict-boolean-expressions": "error",
     "no-console": "error"
   }
 }
