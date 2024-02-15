@@ -2,6 +2,15 @@ import mongoose, { Document, Schema } from 'mongoose';
 import { CategoryType, DifficultyLevel } from '../utils/enums';
 import { AccessControlObject } from '../types/types';
 
+// const categorySpecificFields: { [key in CategoryType]: CategorySpecificFields } = {
+//   subject: {
+//     language: string;
+//     duration: string;
+//     difficultyLevel: DifficultyLevel;
+//     // ...other education-specific fields
+//   },
+// };
+
 export interface ICategory extends Document {
   // Basic category information
   name: string;
@@ -41,6 +50,9 @@ export interface ICategory extends Document {
   tags: string[];
   relatedCategories: Schema.Types.ObjectId[];
   type: CategoryType;
+  // categorySpecificFields?: {
+  //   [key: string]: any;
+  // } & typeof categorySpecificFields[CategoryType];
 
   // Media content
   color: string;

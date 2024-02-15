@@ -9,3 +9,5 @@ export type Rating = {
   feedback?: string;
   createdAt: Date;
 };
+
+export type Status = 'pending' | 'approved' | 'rejected';

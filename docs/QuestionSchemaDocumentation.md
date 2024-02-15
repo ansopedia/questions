@@ -7,7 +7,7 @@ The `Question` schema represents a question within a quiz application. It encomp
 ## Core Question Information
 
 - **quizId:** The reference to the quiz to which the question belongs.
-- **text:** The main text of the question.
+- **title:** The main text of the question.
 - **choices:** An array of references to the available choices for the question.
 - **correctAnswer:** The correct answer to the question.
 - **difficultyLevel:** The difficulty level of the question (Easy, Medium, Hard).
@@ -17,7 +17,6 @@ The `Question` schema represents a question within a quiz application. It encomp
 
 ## Author and User Interaction
 
-- **author:** The reference to the user who authored the question.
 - **feedback:** Additional feedback or information related to the question.
 - **tags:** An array of tags associated with the question.
 - **isActive:** Indicates whether the question is active or not.
@@ -51,7 +50,6 @@ The `Question` schema represents a question within a quiz application. It encomp
 - **attachments:** An array of file references or attachments.
 - **questionType:** The type of the question (Multiple Choice, True/False, etc.).
 - **customFields:** A flexible field for storing custom metadata.
-- **localizedText:** Multi-language support for question text.
 - **questionPools:** An array of references to question pools.
 - **reviewStatus:** The status of the question's review process (Pending, Approved, Rejected).
 

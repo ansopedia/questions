@@ -4,7 +4,6 @@ import { IChoice } from './choice';
 
 export interface IQuestion extends Document {
   // Core Question Information
-  quizId: Schema.Types.ObjectId;
   text: string;
   choices: IChoice[];
   correctAnswer: string;
@@ -14,7 +13,6 @@ export interface IQuestion extends Document {
   timeLimit: number;
 
   // Author and User Interaction
-  author: Schema.Types.ObjectId;
   feedback: string;
   tags: string[];
   isActive: boolean;
@@ -42,19 +40,13 @@ export interface IQuestion extends Document {
   // Attachments and Additional Information
   attachments: string[]; // File references
   questionType: string;
-  customFields: Record<string, unknown>; // Allow for custom metadata
-  localizedText: Record<string, string>; // Multi-language support
+  customFields: Record<string, unknown>;
   questionPools: Schema.Types.ObjectId[];
   reviewStatus: string;
 }
 
-const QuestionSchema: Schema = new Schema(
+const QuestionSchema: Schema<IQuestion> = new Schema(
   {
-    // Core Question Information
-    quizId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Quiz',
-    },
     text: {
       type: String,
       required: true,
@@ -62,7 +54,6 @@ const QuestionSchema: Schema = new Schema(
     choices: [{ type: Schema.Types.ObjectId, ref: 'Choice' }],
     correctAnswer: {
       type: String,
-      required: true,
     },
     difficultyLevel: {
       type: String,
@@ -87,10 +78,6 @@ const QuestionSchema: Schema = new Schema(
     },
 
     // Author and User Interaction
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
     feedback: {
       type: String,
       default: '',
@@ -143,13 +130,12 @@ const QuestionSchema: Schema = new Schema(
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     updatedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    createdAt: Date,
-    updatedAt: Date,
 
     // Attachments and Additional Information
     attachments: {
@@ -178,11 +164,6 @@ const QuestionSchema: Schema = new Schema(
       type: Schema.Types.Mixed,
       default: {},
     },
-    localizedText: {
-      type: Map,
-      of: String,
-      default: {},
-    },
     questionPools: [
       {
         type: Schema.Types.ObjectId,
@@ -201,7 +182,13 @@ const QuestionSchema: Schema = new Schema(
 );
 
 // Indexes for Optimized Queries
-QuestionSchema.index({ text: 'text', category: 1, difficultyLevel: 1, tags: 1 });
+QuestionSchema.index({
+  text: 'text',
+  category: 1,
+  difficultyLevel: 1,
+  tags: 1,
+});
+
 QuestionSchema.index({ isActive: 1, isDeleted: 1 });
 
-export default mongoose.model<IQuestion>('Question', QuestionSchema);
+export const QuestionModel = mongoose.model<IQuestion>('Question', QuestionSchema);
